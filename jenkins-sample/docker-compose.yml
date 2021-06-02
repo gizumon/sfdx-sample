@@ -1,0 +1,22 @@
+version: "3"
+services:
+  jenkins_main:
+    container_name: jenkins_main
+    build:
+        context: .
+        dockerfile: ./docker/main/Dockerfile
+    ports:
+      - 18080:8080
+    volumes:
+      - ./jenkins_home:/var/jenkins_home
+    links:
+      - jenkins_sub01
+    
+
+#   jenkins_sub01:
+#     container_name: jenkins_sub01
+#     build:
+#       context: .
+#       dockerfile: ./docker/sub/Dockerfile
+#     environment:
+#       - JENKINS_SLAVE_SSH_PUBKEY= #前述のid_rsa.pubの値を指定する。

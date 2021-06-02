@@ -1,13 +1,14 @@
-# Purpose
-## This project is just a sample for sfdx project.
+## 目的
+
+SFDXの検証サンプルプロジェクト
 
 <br>
 
-# Result
-## [inspection report](./doc/result.md) is here.
+## 調査レポート
 
-<br>
-<br>
+[リンク](./doc/result.md)
+
+<br><br>
 
 ---
 

@@ -33,3 +33,7 @@ Thumbs.db
 ehthumbs.db
 [Dd]esktop.ini
 $RECYCLE.BIN/
+
+# Jenkins
+jenkins-sample/certifications/*
+jenkins-sample/jenkins_home/*
