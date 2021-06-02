@@ -2,10 +2,10 @@
 pipeline {
     agent any
     environment {
-        SFDX_CERT_KEY = credentials('SFDX-DEV')
-        SFDX_USERNAME = env.SF_USERNAME ?: 'jenkins@service.dev.com'
-        CONSUMER_KEY = env.CONSUMER_KEY
-        GITLAB_URL = env.GITLAB_URL ?: 'https://code-repo.develop.devcond-test.net/user.tomoatsu.sekikawa/sfdx-sample.git'
+        // SFDX_CERT_KEY = credentials('SFDX-DEV')
+        SFDX_USERNAME = 'jenkins@service.dev.com'
+        CONSUMER_KEY = "${env.CONSUMER_KEY}"
+        GITLAB_URL = 'https://code-repo.develop.devcond-test.net/user.tomoatsu.sekikawa/sfdx-sample.git'
     }
     stages {
         stage('Prepare') {
@@ -16,9 +16,11 @@ pipeline {
                     url: "${GITLAB_URL}"
                 echo 'INFO: Success to access gitlab project...'
                 sh '''
+                    ls -l
                     node -v
                     npm -v
                     sfdx -v
+                    printenv
                 '''
             }
         }
