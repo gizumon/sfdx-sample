@@ -45,7 +45,7 @@ Jenkins 環境変数
 |SF_USERNAME|tomoatsu.sekikawa@dev.scsk.com||
 |SF_INSTANCE_URL|https://login.salesforce.com||
 |SF_CONSUMER_KEY|###|※memo参照|
-|SERVER_KEY_CREDENTALS_ID|SFDX_DEV|※任意|
+|SERVER_KEY_CREDENTIALS_ID|SFDX_DEV|※任意|
 |PACKAGE_NAME|||
 |PACKAGE_VERSION|||
 |TEST_LEVEL|||
@@ -58,6 +58,15 @@ Gitlab Access Token
 |---|---|---|
 |User|project_001_bot1|
 |AccessToken|rUf9kpoS5P4JcnecCRy8||
+
+<br>
+
+NodeJS Installation
+|項目|値|備考|
+|---|---|---|
+|Name|NodeJS_SFDX||
+|Version|NodeJS 16.2.0||
+|GlobalNPM|sfdx-cli@7.102||
 
 ### X-1. Jenkins動作確認環境の構築
 
