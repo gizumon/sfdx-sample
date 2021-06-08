@@ -158,7 +158,10 @@ Sandbox/本番環境へのリリースをCI/CD化する際の処理イメージ
   ```
 
 ③ソース形式をメタデータ形式に変換する
-sfdx force:source:convert -d <ディレクトリ名>
+
+  ```bash
+  sfdx force:source:convert -d <ディレクトリ名>
+  ```
 
 ③Sandbox/本番環境へリリース
 
@@ -170,6 +173,12 @@ sfdx force:source:convert -d <ディレクトリ名>
 
 * [Qiita記事](https://qiita.com/yhayashi30/items/80dd868f2e15aac67072)
 * [メタデータに含まれない変更](https://developer.salesforce.com/docs/atlas.ja-jp.api_meta.meta/api_meta/meta_unsupported_types.htm)
+
+### 3-4. 課題
+
+* デプロイの方法について、ソース形式とメタデータ形式どちらを採用するか。
+  * ソース方式のリリースはバグが残存、メタデータ形式の開発はバージョン管理が困難なため、ソース方式で開発しリリース時にメタデータ形式に変換してリリースする方法を検討。
+  * [参考](https://scrapbox.io/nesiyama/%5BSalesforce_CLI%5D_force:source_%E3%81%A8_force:mdapi_%E3%81%A3%E3%81%A6%E3%81%A9%E3%81%86%E9%81%95%E3%81%86%E3%81%AE%EF%BC%9F)
 
 ## 4. Tips
 

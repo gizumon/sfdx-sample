@@ -9,8 +9,8 @@ services:
       - 18080:8080
     volumes:
       - ./jenkins_home:/var/jenkins_home
-    links:
-      - jenkins_sub01
+    # links:
+    #   - jenkins_sub01
     
 
 #   jenkins_sub01:

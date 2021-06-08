@@ -34,6 +34,13 @@ ehthumbs.db
 [Dd]esktop.ini
 $RECYCLE.BIN/
 
+### Custom
 # Jenkins
 jenkins-sample/certifications/*
 jenkins-sample/jenkins_home/*
+
+# Artifact
+artifact/*
+
+# build
+temp/

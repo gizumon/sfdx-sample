@@ -2,55 +2,73 @@
 pipeline {
     agent any
     parameters {
-        string(name: 'SFDX_USERNAME', defaultValue: 'jenkins@service.dev.com', description: 'Salesforceへアクセスするユーザー名')
-        string(name: 'CONSUMER_KEY', defaultValue: "${env.CONSUMER_KEY}", description: 'Salesforceへアクセスするコンシューマーキー')
+        choice(name: 'STAGE', choices: ['PROD', 'SANDBOX'], description: 'リリース先環境')
+        string(name: 'SFDX_USERNAME', defaultValue: 'jenkins@service.dev.com', description: 'デプロイを実行するSalesforceするユーザー名')
         string(name: 'GITLAB_URL', defaultValue: 'https://code-repo.develop.devcond-test.net/user.tomoatsu.sekikawa/sfdx-sample.git', description: 'SFDXプロジェクト Gitlab URL')
-        // credentials(name: 'SFDX_CREDENTIALS', credentialType: 'com.cloudbees.plugins.credentials.impl.CertificateCredentialsImpl', defaultValue: 'SFDX_DEV', description: 'SFDX用のJWTキー', required: true)
-        // credentials(name: 'SFDX_CREDENTIALS', credentialType: 'org.jenkinsci.plugins.plaincredentials.impl.FileCredentialsImpl', defaultValue: 'SFDX_SEVER_KEY', description: 'Salesforce組織への認証キー', required: true)
+        // If set this key in each build
+        // string(name: 'CONSUMER_KEY', defaultValue: "${env.CONSUMER_KEY}", description: 'Salesforceへアクセスするコンシューマーキー')
     }
     environment {
         NODEJS_HOME = "${tool 'NodeJS_SFDX'}"
         PATH = "${env.NODEJS_HOME}/bin:${env.PATH}"
-        SFDX_CREDENTIALS = credentials('SFDX_SEVER_KEY')
+        // Assuming that devcond can use same server key in different salesforce org
+        SFDX_SEVER_KEY = credentials('SFDX_SEVER_KEY')
+        CONSUMER_KEY = "${env.CONSUMER_KEY}"
     }
     stages {
         stage('Prepare') {
             steps {
-                // Set git
-                echo 'INFO: Preparing stage start...'
-                echo 'INFO: Access to gitlab project...'
+                // Setup gitlab
                 git credentialsId: 'GITLAB_USER',
                     url: "${GITLAB_URL}"
-                echo 'INFO: Success to access gitlab project...'
-                // Set node path
-                echo 'INFO: Setting node path...'
-                sh 'npm --version'
+                echo 'INFO: Build envionments of pipeline'
                 sh '''
-                    ls -l
-                    node -v
-                    npm -v
-                    sfdx -v
-                    printenv
+                    node -v > ./release/build-environment.txt
+                    npm -v >> ./release/build-environment.txt
+                    sfdx -v >> ./release/build-environment.txt
                 '''
             }
         }
-        stage('Login') {
+        stage('Build') {
             steps {
-                echo 'INFO: Login stage start...'
-                sh """
-                    sfdx force:auth:jwt:grant -i ${CONSUMER_KEY} -u ${SFDX_USERNAME} -f ${SFDX_CREDENTIALS}
-                """
+                // Build source
+                // INFO: If use force:source:release, then don't need to convert source
+                echo 'INFO: Convert source'
+                sh '''
+                    sfdx force:source:convert -d ./release
+                    tar -cvf package.tar ./release
+                '''
             }
         }
         // stage('Test') {
         //     steps {
-        //         echo 'Testing..'
+        //         // INFO: If you would like to test Apex then define the followigns...
+        //         sh '''
+        //             sfdx force:apex:test:run
+        //             sfdx force:apex:test:report
+        //         '''
         //     }
         // }
         stage('Deploy') {
             steps {
-                echo 'INFO: Deploying stage start....'
+                sh """
+                    if [ "${STAGE}" = "PROD" ]; then
+                        # Login PROD org
+                        sfdx force:auth:jwt:grant -i ${CONSUMER_KEY} -u ${SFDX_USERNAME} -f ${SFDX_SEVER_KEY} -a sfdx
+                    else
+                        # Login TEST org
+                        # TODO: Check actual sandbox org because there is no Sandbox in DeveloperEditon.
+                        sfdx force:auth:jwt:grant -i ${CONSUMER_KEY} -u ${SFDX_USERNAME} -f ${SFDX_SEVER_KEY} -a sfdx --instanceurl https://test.salesforce.com
+                    fi
+                    # Depoly converted metadata
+                    sfdx force:mdapi:deploy　-w "-1" -d ./release -u sfdx
+                """
             }
+        }
+    }
+    post {
+        success {
+            archiveArtifacts artifacts: 'package.tar', followSymlinks: false
         }
     }
 }
