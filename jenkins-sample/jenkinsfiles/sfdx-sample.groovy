@@ -61,7 +61,8 @@ pipeline {
                         sfdx force:auth:jwt:grant -i ${CONSUMER_KEY} -u ${SFDX_USERNAME} -f ${SFDX_SEVER_KEY} -a sfdx --instanceurl https://test.salesforce.com
                     fi
                     # Depoly converted metadata
-                    sfdx force:mdapi:deploy　-w "-1" -d ./release -u sfdx
+                    sfdx force:mdapi:deploy -w "-1" -d ./release -u sfdx
+                    # sfdx force:mdapi:deploy -d ./release -u sfdx
                 """
             }
         }
