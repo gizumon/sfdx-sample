@@ -23,7 +23,7 @@ pipeline {
                 git credentialsId: 'GITLAB_USER',
                     url: "${GITLAB_URL}"
                 echo 'INFO: Build envionments of pipeline'
-                sh "git checkout origin/${DEPLOY_BRANCH}"
+                sh "git checkout -b depoloy origin/${DEPLOY_BRANCH}"
                 sh '''
                     node -v > ./release/build-environment.txt
                     npm -v >> ./release/build-environment.txt

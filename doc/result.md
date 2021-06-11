@@ -8,6 +8,7 @@ SFDXによるソースコードベースの開発を目的として検証
 * [2. 初期設定手順](#2-初期設定手順)
 * [3. APPENDIX](#3-appendix)
 * [4. Tips](#4-tips)
+* [5. Demo](#5-Demo)
 
 ## 1. 導入
 
@@ -159,7 +160,9 @@ __③既にGit管理しているプロジェクトがある場合：__
 ### 4-1. スクラッチ組織の作成ができない。。。 (1)
 
 ```bash
-# error message
+sfdx force:org:create -s -f config/project-scratch-def.json -a scratch
+
+# Error message
 ERROR running force:org:create:  This command requires a dev hub org username set either with a flag or by default in the config.
 ```
 
@@ -177,6 +180,8 @@ ERROR running force:org:create:  This command requires a dev hub org username se
 ### 4-2. スクラッチ組織の作成ができない。。。 (2)
 
 ```bash
+sfdx force:org:create -s -f config/project-scratch-def.json -a scratch
+
 # error message
 ERROR running force:org:create:  この組織は有効なスクラッチ組織の制限に達したため、サインアップ要求に失敗しました
 ```
@@ -198,8 +203,31 @@ ERROR running force:org:create:  この組織は有効なスクラッチ組織�
 
 </details>
 
+### 4-3. スクラッチ組織の作成ができない。。。 (3)
 
-## Demo
+```bash
+sfdx force:org:create -s -f config/project-scratch-def.json -a scratch
+
+# Error message
+ERROR running force:org:create:  You do not have access to the [ScratchOrgInfo] object
+```
+
+<details>
+<summary>解決方法</summary>
+
+* スクラッチ組織を作成する権限がないユーザーでログインしていると思われます。下記コマンドより、再度認証お試しください。
+  
+  ```bash
+  sfdx force:auth:web:login -d -a [任意の環境名]
+  ```
+
+</details>
+
+## 5. Demo
+
+2021/06/11 内部向けデモシナリオ
+
+<details><summary>デモシナリオ</summary>
 
 ### 1. SFDXの紹介
 
@@ -278,3 +306,5 @@ ERROR running force:org:create:  この組織は有効なスクラッチ組織�
 * sfdx-sampleで、Pipelineを実行
 
 * 本番組織へ変更が反映されていることを確認
+
+</details>

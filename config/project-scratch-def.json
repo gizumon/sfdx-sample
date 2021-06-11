@@ -4,7 +4,8 @@
   "features": [
     "Communities",
     "WorkplaceCommandCenterUser",
-    "ForceComPlatform"
+    "ForceComPlatform",
+    "WorkThanksPref"
   ], 
   "settings": {
     "securitySettings": {
