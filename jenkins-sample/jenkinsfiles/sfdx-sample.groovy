@@ -2,9 +2,10 @@
 pipeline {
     agent any
     parameters {
-        choice(name: 'STAGE', choices: ['PROD', 'SANDBOX'], description: 'リリース先環境')
+        choice(name: 'STAGE', choices: ['PROD', 'PPD', 'DEV'], description: 'リリース先環境')
         string(name: 'SFDX_USERNAME', defaultValue: 'jenkins@service.dev.com', description: 'デプロイを実行するSalesforceするユーザー名')
         string(name: 'GITLAB_URL', defaultValue: 'https://code-repo.develop.devcond-test.net/user.tomoatsu.sekikawa/sfdx-sample.git', description: 'SFDXプロジェクト Gitlab URL')
+        string(name: 'DEPLOY_BRANCH', defaultValue: 'master', description: 'デプロイ対象のソースが')
         // If set this key in each build
         // string(name: 'CONSUMER_KEY', defaultValue: "${env.CONSUMER_KEY}", description: 'Salesforceへアクセスするコンシューマーキー')
     }
@@ -22,6 +23,7 @@ pipeline {
                 git credentialsId: 'GITLAB_USER',
                     url: "${GITLAB_URL}"
                 echo 'INFO: Build envionments of pipeline'
+                sh "git checkout origin/${DEPLOY_BRANCH}"
                 sh '''
                     node -v > ./release/build-environment.txt
                     npm -v >> ./release/build-environment.txt
