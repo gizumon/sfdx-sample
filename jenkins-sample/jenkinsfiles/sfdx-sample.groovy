@@ -5,7 +5,7 @@ pipeline {
         choice(name: 'STAGE', choices: ['PROD', 'PPD', 'DEV'], description: 'リリース先環境')
         string(name: 'SFDX_USERNAME', defaultValue: 'jenkins@service.dev.com', description: 'デプロイを実行するSalesforceするユーザー名')
         string(name: 'GITLAB_URL', defaultValue: 'https://code-repo.develop.devcond-test.net/user.tomoatsu.sekikawa/sfdx-sample.git', description: 'SFDXプロジェクト Gitlab URL')
-        string(name: 'DEPLOY_BRANCH', defaultValue: 'master', description: 'デプロイ対象のソースが')
+        string(name: 'DEPLOY_BRANCH', defaultValue: 'master', description: 'デプロイ対象のブランチ')
         // If set this key in each build
         // string(name: 'CONSUMER_KEY', defaultValue: "${env.CONSUMER_KEY}", description: 'Salesforceへアクセスするコンシューマーキー')
     }

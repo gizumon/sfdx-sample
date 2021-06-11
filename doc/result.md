@@ -127,13 +127,13 @@ __③既にGit管理しているプロジェクトがある場合：__
 1. ローカルに反映された変更をコミット
 
     ```bash
-    > git commit
+    git commit
     ```
 
 1. コミットをリモートリポジトリへ反映
 
     ```bash
-    > git push origin [任意のブランチ]
+    git push origin [任意のブランチ]
     ```
 
 ## 3. APPENDIX
@@ -172,7 +172,7 @@ ERROR running force:org:create:  This command requires a dev hub org username se
 * ログイン情報が正しくない可能性があります。再度下記のコマンドよりログインしてください。
 
   ```bash
-  > sfdx force:auth:web:login -d -a [任意の環境名]
+  sfdx force:auth:web:login -d -a [任意の環境名]
   ```
 
 </details>
@@ -198,7 +198,7 @@ ERROR running force:org:create:  この組織は有効なスクラッチ組織�
         * 下記のコマンドで現在の使用状況を確認可能です。
 
           ```bash
-          > sfdx force:limits:api:display -u [設定したDevHubのエイリアス名]
+          sfdx force:limits:api:display -u [設定したDevHubのエイリアス名]
           ```
 
 </details>
@@ -239,20 +239,33 @@ ERROR running force:org:create:  You do not have access to the [ScratchOrgInfo] 
   * 設定　⇨　DevHub
 * JWTキーの設定
   * 設定　⇨　新規接続アプリケーション
-* ローカルでCLIログイン
+* ローカルでログイン
 
     ```bash
-    export CONSUMER_KEY=3MVG95mg0lk4batgzm6iNzpzgAZC0Vi6_8Ss60MiSnjWKMNUIdykjVDmagvaVhvfmBNAQGw.0McuNUvUrp2_g
-    export HUB_USERNAME=jenkins@service.dev.com
-    export JWT_KEY_FILE=../certifications/server.key
-    sfdx force:auth:jwt:grant -i ${CONSUMER_KEY} -u ${HUB_USERNAME} -f ${JWT_KEY_FILE} -a jwt
+    sfdx force:auth:web:login -a devhub-demo
     ```
+
+* スクラッチ組織の作成状況確認
+  
+   ```bash
+   sfdx force:org:list
+   ```
 
 * スクラッチ組織の作成
 
     ```bash
     sfdx force:org:create -s -f config/project-scratch-def.json -a demo
     ```
+
+* 作成したスクラッチ組織の確認と作成上限の確認
+  
+   ```bash
+   sfdx force:org:list
+
+   sfdx force:limits:api:display -u devhub-demo
+   ```
+
+  * Salesforceから「有効なスクラッチ情報」で状況確認することが可能
 
 * スクラッチ組織の起動
 
