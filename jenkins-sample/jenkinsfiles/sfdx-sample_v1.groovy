@@ -42,16 +42,15 @@ pipeline {
                 '''
             }
         }
-        stage('Test') {
-            steps {
-                // INFO: If you would like to test Apex then define the followigns...
-                sh '''
-                    echo y | sfdx plugins:install sfdx-codescan-plugin
-                    sfdx force:apex:test:run
-                    sfdx force:apex:test:report
-                '''
-            }
-        }
+        // stage('Test') {
+        //     steps {
+        //         // INFO: If you would like to test Apex then define the followigns...
+        //         sh '''
+        //             sfdx force:apex:test:run
+        //             sfdx force:apex:test:report
+        //         '''
+        //     }
+        // }
         stage('Deploy') {
             steps {
                 sh """
