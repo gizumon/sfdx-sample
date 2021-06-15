@@ -4,7 +4,42 @@ Salesforceに適用可能なテスト自動化ツールを検証する目的
 
 ## 0. アジェンダ
 
-## 1. 対象テストツール
+
+## 1. Salesforce標準Apexテスト
+
+Apexのテストクラス実行を調査
+
+### 1-1. ApexTestの実行
+
+CI/CDに適用可能なテストコマンドは下記。
+
+```bash
+sfdx force:mdapi:deploy -w '-1' -d ./release -u sfdx --testlevel=RunLocalTests
+```
+
+* --testlevel : RunLocalTest指定でリリース時にApexテストを実行。
+  * テストが失敗した場合は、リリースが失敗
+    ![test-failed-capture](./assets/test-failed-capture.png)
+
+<br>
+
+<details><summary>備考：</summary>
+
+下記の通り、テストコマンドが存在するが、CI/CDには適用難しい。
+
+```bash
+sfdx force:apex:test:run --synchronous -w -1 -c -v -r human --testlevel=RunLocalTests -u [ユーザー]
+```
+
+* 環境上でテスト実行するため、リリース前のモジュールに対するテストは不可。
+  * 従って、CI/CD時のテストとしては不適。各自がスクラッチ組織上でテスト書いた際に実行するコマンドとして運用推奨。
+* スクラッチ組織を利用して、単体テスト実行環境を作成する方法もあるが、スクラッチ組織に作成上限がある関係から、適用は現実的でない認識。
+
+</details>
+
+<br>
+
+## 2. 静的解析テスト対象
 
 |No.|ツール名|無料枠有無|特徴|参考価格|
 |---|---|---|---|---|
@@ -13,9 +48,9 @@ Salesforceに適用可能なテスト自動化ツールを検証する目的
 |3|[PMD Apex](https://github.com/pmd/pmd)|OSS|無料|
 |4|[salesforce-sonar-plugin](https://github.com/SalesforceFoundation/salesforce-sonar-plugin)|OSS|無料|
 
-* Sonar Cubeとの親和性の観点から、code.scanを調査
+* Sonar Cubeとの親和性の観点から、`code.scan`を調査
 
-## 2. 対象ツール調査詳細
+## 3. 対象ツール調査詳細
 
 [code.scan](https://www.codescan.io/)を対象として、静的解析の適用調査。
 
@@ -50,7 +85,6 @@ sfdx plugins:install sfdx-codescan-plugin
 ```
 
 ### 2-3. Code scanの実行
-
 
 
 ## X. リファレンス
