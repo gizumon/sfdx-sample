@@ -5,7 +5,7 @@ pipeline {
         choice(name: 'STAGE', choices: ['PROD', 'PPD', 'DEV'], description: 'リリース先環境')
         string(name: 'SFDX_USERNAME', defaultValue: 'jenkins@service.dev.com', description: 'デプロイを実行するSalesforceするユーザー名')
         string(name: 'GITLAB_URL', defaultValue: 'https://code-repo.develop.devcond-test.net/user.tomoatsu.sekikawa/sfdx-sample.git', description: 'SFDXプロジェクト Gitlab URL')
-        string(name: 'DEPLOY_BRANCH', defaultValue: 'master', description: 'デプロイ対象のブランチ')
+        string(name: 'DEPLOY_BRANCH', defaultValue: 'develop/jenkins', description: 'デプロイ対象のブランチ')
         choice(name: 'IS_RUN_TEST', choices: ['TRUE', 'FALSE'], description: 'テストを実行するか')
         // If set this key in each build
         // string(name: 'CONSUMER_KEY', defaultValue: "${env.CONSUMER_KEY}", description: 'Salesforceへアクセスするコンシューマーキー')
@@ -26,7 +26,7 @@ pipeline {
                 echo 'INFO: Build envionments of pipeline'
                 sh "git checkout -B deploy origin/${DEPLOY_BRANCH}"
                 sh '''
-                    mkdir ./release
+                    mkdir -p ./release
                     node -v > ./release/build-environment.txt
                     npm -v >> ./release/build-environment.txt
                     sfdx -v >> ./release/build-environment.txt

@@ -141,10 +141,10 @@
         <enabled>true</enabled>
         <name>ListEmailSend</name>
     </userPermissions>
-    <userPermissions>
+    <!-- <userPermissions>
         <enabled>true</enabled>
         <name>ManageCssUsers</name>
-    </userPermissions>
+    </userPermissions> -->
     <userPermissions>
         <enabled>true</enabled>
         <name>ManageEncryptionKeys</name>
@@ -185,10 +185,10 @@
         <enabled>true</enabled>
         <name>ViewEventLogFiles</name>
     </userPermissions>
-    <userPermissions>
+    <!-- <userPermissions>
         <enabled>true</enabled>
         <name>ViewGlobalHeader</name>
-    </userPermissions>
+    </userPermissions> -->
     <userPermissions>
         <enabled>true</enabled>
         <name>ViewHelpLink</name>
