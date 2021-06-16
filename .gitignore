@@ -46,9 +46,9 @@ artifact/*
 temp/
 
 # Sonar cube
-jenkins-sample/sonarcube/conf/*
-jenkins-sample/sonarcube/data/*
-# jenkins-sample/sonarcube/extensions/*
-jenkins-sample/sonarcube/logs/*
-jenkins-sample/sonarcube/postgresql/*
-jenkins-sample/sonarcube/postgresql_data/*
+jenkins-sample/sonarqube/conf/*
+jenkins-sample/sonarqube/data/*
+# jenkins-sample/sonarqube/extensions/*
+jenkins-sample/sonarqube/logs/*
+jenkins-sample/sonarqube/postgresql/*
+jenkins-sample/sonarqube/postgresql_data/*
