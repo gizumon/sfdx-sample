@@ -256,6 +256,59 @@ Error  release/profiles/Custom%3A Support Profile.profile    Custom%3A Support P
 
 </details>
 
+### 4-5. Sonar Qubeにプラグイン導入するとエラーで落ちてしまう。。。
+
+```bash
+2021.06.16 06:16:21 INFO  ce[][o.s.ce.app.CeServer] Compute Engine is stopped
+2021.06.16 06:18:57 INFO  ce[][o.s.p.ProcessEntryPoint] Starting ce
+2021.06.16 06:18:57 INFO  ce[][o.s.ce.app.CeServer] Compute Engine starting up...
+2021.06.16 06:18:59 INFO  ce[][o.e.p.PluginsService] no modules loaded
+2021.06.16 06:18:59 INFO  ce[][o.e.p.PluginsService] loaded plugin [org.elasticsearch.join.ParentJoinPlugin]
+2021.06.16 06:18:59 INFO  ce[][o.e.p.PluginsService] loaded plugin [org.elasticsearch.percolator.PercolatorPlugin]
+2021.06.16 06:18:59 INFO  ce[][o.e.p.PluginsService] loaded plugin [org.elasticsearch.transport.Netty4Plugin]
+2021.06.16 06:19:08 INFO  ce[][o.s.s.e.EsClientProvider] Connected to local Elasticsearch: [127.0.0.1:9001]
+2021.06.16 06:19:18 INFO  ce[][o.sonar.db.Database] Create JDBC data source for jdbc:postgresql://postgresql:5432/sonar
+2021.06.16 06:19:18 INFO  ce[][o.s.p.ProcessEntryPoint] Hard stopping process
+2021.06.16 06:19:19 WARN  ce[][o.s.p.ProcessEntryPoint$HardStopperThread] Can not stop in 1000ms
+2021.06.16 06:19:22 INFO  ce[][o.s.s.p.ServerFileSystemImpl] SonarQube home: /opt/sonarqube
+2021.06.16 06:19:22 INFO  ce[][o.s.c.c.CePluginRepository] Load plugins
+2021.06.16 06:19:22 ERROR ce[][o.s.ce.app.CeServer] Compute Engine startup failed
+java.lang.IllegalStateException: Fail to unzip plugin [codescanlang] /opt/sonarqube/extensions/plugins/sonar-codescanlang-plugin-4.5.6.jar to /opt/sonarqube/temp/ce-exploded-plugins/codescanlang
+	at org.sonar.ce.container.CePluginJarExploder.explode(CePluginJarExploder.java:56)
+	at org.sonar.core.platform.PluginLoader.defineClassloaders(PluginLoader.java:84)
+	at org.sonar.core.platform.PluginLoader.load(PluginLoader.java:64)
+	at org.sonar.ce.container.CePluginRepository.start(CePluginRepository.java:71)
+	at org.sonar.core.platform.StartableCloseableSafeLifecyleStrategy.start(StartableCloseableSafeLifecyleStrategy.java:40)
+	at org.picocontainer.injectors.AbstractInjectionFactory$LifecycleAdapter.start(AbstractInjectionFactory.java:84)
+	at org.picocontainer.behaviors.AbstractBehavior.start(AbstractBehavior.java:169)
+	at org.picocontainer.behaviors.Stored$RealComponentLifecycle.start(Stored.java:132)
+	at org.picocontainer.behaviors.Stored.start(Stored.java:110)
+	at org.picocontainer.DefaultPicoContainer.potentiallyStartAdapter(DefaultPicoContainer.java:1016)
+	at org.picocontainer.DefaultPicoContainer.startAdapters(DefaultPicoContainer.java:1009)
+	at org.picocontainer.DefaultPicoContainer.start(DefaultPicoContainer.java:767)
+	at org.sonar.core.platform.ComponentContainer.startComponents(ComponentContainer.java:135)
+	at org.sonar.ce.container.ComputeEngineContainerImpl.startLevel2(ComputeEngineContainerImpl.java:217)
+	at org.sonar.ce.container.ComputeEngineContainerImpl.start(ComputeEngineContainerImpl.java:187)
+	at org.sonar.ce.ComputeEngineImpl.startup(ComputeEngineImpl.java:45)
+	at org.sonar.ce.app.CeServer$CeMainThread.attemptStartup(CeServer.java:160)
+	at org.sonar.ce.app.CeServer$CeMainThread.run(CeServer.java:138)
+Caused by: java.nio.channels.ClosedByInterruptException: null
+	at java.base/java.nio.channels.spi.AbstractInterruptibleChannel.end(Unknown Source)
+	at java.base/sun.nio.ch.FileChannelImpl.endBlocking(Unknown Source)
+	at java.base/sun.nio.ch.FileChannelImpl.size(Unknown Source)
+	at org.apache.commons.io.FileUtils.doCopyFile(FileUtils.java:1125)
+	at org.apache.commons.io.FileUtils.copyFile(FileUtils.java:1076)
+	at org.apache.commons.io.FileUtils.copyFile(FileUtils.java:1028)
+	at org.sonar.ce.container.CePluginJarExploder.explode(CePluginJarExploder.java:52)
+	... 17 common frames omitted
+```
+
+<details><summary>解決方法</summary>
+
+確認中
+
+</details>
+
 ## 5. Demo
 
 デモシナリオは、[こちら](./demo.md)
