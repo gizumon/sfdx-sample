@@ -95,6 +95,10 @@
                 <behavior>Edit</behavior>
                 <field>test_0615__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>test_0616__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
