@@ -223,6 +223,39 @@ ERROR running force:org:create:  You do not have access to the [ScratchOrgInfo] 
 
 </details>
 
+### 4-4. メタデータAPIリリース時に一部のパーミッションが存在しないと弾かれてしまう。。。
+
+```bash
+sfdx force:mdapi:deploy -w -1 -d ./release -u sfdx --testlevel=RunLocalTests
+
+# Error message
+Error  release/profiles/Custom%3A Marketing Profile.profile  Custom%3A Marketing Profile  Unknown user permission: ManageCssUsers
+Error  release/profiles/Custom%3A Sales Profile.profile      Custom%3A Sales Profile      Unknown user permission: ManageCssUsers
+Error  release/profiles/Custom%3A Support Profile.profile    Custom%3A Support Profile    Unknown user permission: ManageCssUsers
+```
+
+<details><summary>解決方法</summary>
+
+* スクラッチ組織と本番組織/サンドボックスのデフォルトのプロファイル設定が異なる模様。([参考](https://developer.salesforce.com/forums/?id=9060G0000005WHjQAM))
+
+* 検証時点では、自動化に組み込み可能なワークアラウンドを見つけられていないため、下記をコメントアウトして、再度リリース下さい。
+  * ※下記は既知のものです。その他にエラー出現するものありましたら、ご追加お願いします。
+
+|ファイル名|項目名|備考|
+|---|---|---|
+|Admin.profile-meta.xml|CreateWorkBadgeDefinition||
+|Admin.profile-meta.xml|FieldServiceAccess||
+|Admin.profile-meta.xml|ManagePartners||
+|Admin.profile-meta.xml|SendExternalEmailAvailable||
+|Custom%3A Marketing Profile.profile-meta.xml|ManageCssUsers||
+|Custom%3A Marketing Profile.profile-meta.xml|ViewGlobalHeader||
+|Custom%3A Sales Profile.profile-meta.xml|ManageCssUsers||
+|Custom%3A Sales Profile.profile-meta.xml|ViewGlobalHeader||
+|Custom%3A Support Profile.profile-meta.xml|ManageCssUsers||
+|Custom%3A Support Profile.profile-meta.xml|ViewGlobalHeader||
+
+</details>
+
 ## 5. Demo
 
 デモシナリオは、[こちら](./demo.md)
