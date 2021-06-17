@@ -14,8 +14,8 @@ pipeline {
         NODEJS_HOME = "${tool 'NodeJS_SFDX'}"
         PATH = "${env.NODEJS_HOME}/bin:${env.PATH}"
         // Assuming that devcond can use same server key in different salesforce org
-        SFDX_SEVER_KEY = credentials('SFDX_SEVER_KEY')
-        CONSUMER_KEY = "${env.CONSUMER_KEY}"
+        SEVER_KEY = credentials('SFDX_SEVER_KEY')
+        CONSUMER_KEY = credentials('SFDX_CONSUMER_KEY')
     }
     stages {
         stage('Prepare') {
@@ -36,11 +36,11 @@ pipeline {
                 sh """
                     if [ "${STAGE}" = "PROD" ]; then
                         # Login PROD org
-                        sfdx force:auth:jwt:grant -i ${CONSUMER_KEY} -u ${SFDX_USERNAME} -f ${SFDX_SEVER_KEY} -a sfdx
+                        sfdx force:auth:jwt:grant -i ${CONSUMER_KEY} -u ${SFDX_USERNAME} -f ${SEVER_KEY} -a sfdx
                     else
                         # Login TEST org
                         # TODO: Check actual sandbox org because there is no Sandbox in DeveloperEditon.
-                        sfdx force:auth:jwt:grant -i ${CONSUMER_KEY} -u ${SFDX_USERNAME} -f ${SFDX_SEVER_KEY} -a sfdx --instanceurl https://test.salesforce.com
+                        sfdx force:auth:jwt:grant -i ${CONSUMER_KEY} -u ${SFDX_USERNAME} -f ${SEVER_KEY} -a sfdx --instanceurl https://test.salesforce.com
                     fi
                 """
             }
@@ -58,9 +58,10 @@ pipeline {
         }
         stage('Test') {
             steps {
-                // INFO: If you would like to test Apex then define the followigns...
+                // INFO: The Apex test command will be executed on the connected org and cannot be tested prior to this release
                 sh """
                     # echo y | sfdx plugins:install sfdx-codescan-plugin
+                    ## INFO: The following command will be executed on the connected org and cannot be tested prior to this release
                     # sfdx force:apex:test:run --synchronous -w "-1" -c -v -r human --testlevel=RunLocalTests -u ${SFDX_USERNAME}
                 """
             }
