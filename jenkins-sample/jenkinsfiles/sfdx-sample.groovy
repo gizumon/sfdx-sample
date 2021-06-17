@@ -21,7 +21,7 @@ pipeline {
         stage('Prepare') {
             steps {
                 // Setup gitlab
-                git credentialsId: 'GITLAB_USER',
+                git credentialsId: 'gitlab-integrator',
                     url: "${GITLAB_URL}"
                 echo 'INFO: Build envionments of pipeline'
                 sh "git checkout -B deploy origin/${DEPLOY_BRANCH}"
