@@ -45,10 +45,13 @@ artifact/*
 # build
 temp/
 
-# Sonar cube
+# Sonar Qube
 jenkins-sample/sonarqube/conf/*
 jenkins-sample/sonarqube/data/*
 # jenkins-sample/sonarqube/extensions/*
 jenkins-sample/sonarqube/logs/*
 jenkins-sample/sonarqube/postgresql/*
 jenkins-sample/sonarqube/postgresql_data/*
+
+.scannerwork/
+.project.license

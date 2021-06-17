@@ -25,13 +25,14 @@ SFDX化によるソース駆動型の開発により、バージョン管理シ�
 
 ## 2. 初期設定手順
 
-|No.|項目||①初期SFDX設定時|②SFDX設定済み + ソースがGit管理されている場合|③ローカルにプロジェクト作成後|
+|No.|項目||①初期SFDX設定時|②SFDX設定済み + ソースがGit管理されている場合|③ローカルにSFDXプロジェクト作成後|
 |---|---|---|:---:|:---:|:---:|
 |2-0|[環境](#2-0-環境)||●|●|●|
-|2-1|[DevHubの有効化](#2-1-DevHubの有効化-初回のみ)||●|||
+|2-1|[DevHubの有効化](#2-1-devhubの有効化-初回のみ)||●|||
 |2-2|[ローカル環境にプロジェクトを作成](#2-2-ローカル環境にプロジェクトを作成)||●|● ※③||
 |2-3|[スクラッチ組織の起動〜変更](#2-3-スクラッチ組織の起動変更)||●|●|●|
 |2-4|[ソースへの反映](#2-4-ソースへの反映)||●|●|●|
+|2-X|[オプション：JWTベアラーフロー認証の設定](#2-x-jwtベアラーフロー認証の設定)||●|||
 
 ### 2-0. 環境
 
@@ -135,6 +136,19 @@ __③既にGit管理しているプロジェクトがある場合：__
     ```bash
     git push origin [任意のブランチ]
     ```
+
+<br>
+
+`オプション`
+
+### 2-X. JWTベアラーフロー認証の設定
+
+* CI/CDでCLIベースの認証を可能にする目的のため、オプション操作
+* Salesforceの本番組織上で、下記よりJWTベアラーフロー認証設定を実施
+  * 設定　⇨　Lightning Experience アプリケーションマネージャ ⇨ 新規接続アプリケーション
+  * 設定の詳細は[こちら](https://developer.salesforce.com/docs/atlas.ja-jp.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_jwt_flow.htm)を参考にください
+* こちらの設定で使用した `server.key` ファイルは、CI/CD設定で使用するため、保管ください
+* こちらの設定で生成された `コンシューマーキー` は、CI/CD設定で使用するため、保管ください
 
 ## 3. APPENDIX
 
@@ -259,53 +273,17 @@ Error  release/profiles/Custom%3A Support Profile.profile    Custom%3A Support P
 ### 4-5. Sonar Qubeにプラグイン導入するとエラーで落ちてしまう。。。
 
 ```bash
-2021.06.16 06:16:21 INFO  ce[][o.s.ce.app.CeServer] Compute Engine is stopped
-2021.06.16 06:18:57 INFO  ce[][o.s.p.ProcessEntryPoint] Starting ce
-2021.06.16 06:18:57 INFO  ce[][o.s.ce.app.CeServer] Compute Engine starting up...
-2021.06.16 06:18:59 INFO  ce[][o.e.p.PluginsService] no modules loaded
-2021.06.16 06:18:59 INFO  ce[][o.e.p.PluginsService] loaded plugin [org.elasticsearch.join.ParentJoinPlugin]
-2021.06.16 06:18:59 INFO  ce[][o.e.p.PluginsService] loaded plugin [org.elasticsearch.percolator.PercolatorPlugin]
-2021.06.16 06:18:59 INFO  ce[][o.e.p.PluginsService] loaded plugin [org.elasticsearch.transport.Netty4Plugin]
-2021.06.16 06:19:08 INFO  ce[][o.s.s.e.EsClientProvider] Connected to local Elasticsearch: [127.0.0.1:9001]
-2021.06.16 06:19:18 INFO  ce[][o.sonar.db.Database] Create JDBC data source for jdbc:postgresql://postgresql:5432/sonar
-2021.06.16 06:19:18 INFO  ce[][o.s.p.ProcessEntryPoint] Hard stopping process
-2021.06.16 06:19:19 WARN  ce[][o.s.p.ProcessEntryPoint$HardStopperThread] Can not stop in 1000ms
-2021.06.16 06:19:22 INFO  ce[][o.s.s.p.ServerFileSystemImpl] SonarQube home: /opt/sonarqube
-2021.06.16 06:19:22 INFO  ce[][o.s.c.c.CePluginRepository] Load plugins
 2021.06.16 06:19:22 ERROR ce[][o.s.ce.app.CeServer] Compute Engine startup failed
 java.lang.IllegalStateException: Fail to unzip plugin [codescanlang] /opt/sonarqube/extensions/plugins/sonar-codescanlang-plugin-4.5.6.jar to /opt/sonarqube/temp/ce-exploded-plugins/codescanlang
-	at org.sonar.ce.container.CePluginJarExploder.explode(CePluginJarExploder.java:56)
-	at org.sonar.core.platform.PluginLoader.defineClassloaders(PluginLoader.java:84)
-	at org.sonar.core.platform.PluginLoader.load(PluginLoader.java:64)
-	at org.sonar.ce.container.CePluginRepository.start(CePluginRepository.java:71)
-	at org.sonar.core.platform.StartableCloseableSafeLifecyleStrategy.start(StartableCloseableSafeLifecyleStrategy.java:40)
-	at org.picocontainer.injectors.AbstractInjectionFactory$LifecycleAdapter.start(AbstractInjectionFactory.java:84)
-	at org.picocontainer.behaviors.AbstractBehavior.start(AbstractBehavior.java:169)
-	at org.picocontainer.behaviors.Stored$RealComponentLifecycle.start(Stored.java:132)
-	at org.picocontainer.behaviors.Stored.start(Stored.java:110)
-	at org.picocontainer.DefaultPicoContainer.potentiallyStartAdapter(DefaultPicoContainer.java:1016)
-	at org.picocontainer.DefaultPicoContainer.startAdapters(DefaultPicoContainer.java:1009)
-	at org.picocontainer.DefaultPicoContainer.start(DefaultPicoContainer.java:767)
-	at org.sonar.core.platform.ComponentContainer.startComponents(ComponentContainer.java:135)
-	at org.sonar.ce.container.ComputeEngineContainerImpl.startLevel2(ComputeEngineContainerImpl.java:217)
-	at org.sonar.ce.container.ComputeEngineContainerImpl.start(ComputeEngineContainerImpl.java:187)
-	at org.sonar.ce.ComputeEngineImpl.startup(ComputeEngineImpl.java:45)
-	at org.sonar.ce.app.CeServer$CeMainThread.attemptStartup(CeServer.java:160)
-	at org.sonar.ce.app.CeServer$CeMainThread.run(CeServer.java:138)
-Caused by: java.nio.channels.ClosedByInterruptException: null
-	at java.base/java.nio.channels.spi.AbstractInterruptibleChannel.end(Unknown Source)
-	at java.base/sun.nio.ch.FileChannelImpl.endBlocking(Unknown Source)
-	at java.base/sun.nio.ch.FileChannelImpl.size(Unknown Source)
-	at org.apache.commons.io.FileUtils.doCopyFile(FileUtils.java:1125)
-	at org.apache.commons.io.FileUtils.copyFile(FileUtils.java:1076)
-	at org.apache.commons.io.FileUtils.copyFile(FileUtils.java:1028)
-	at org.sonar.ce.container.CePluginJarExploder.explode(CePluginJarExploder.java:52)
-	... 17 common frames omitted
 ```
 
 <details><summary>解決方法</summary>
 
-確認中
+UnZipに失敗している模様。
+原因調査したが、特定まで至らなかったが、
+Dockerの許容メモリを2GBから4GBにあげることで解消すること確認。
+
+⇨　Dockerの許容メモリ上限をあげることお試しください。
 
 </details>
 
