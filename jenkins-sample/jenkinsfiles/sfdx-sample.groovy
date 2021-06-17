@@ -7,20 +7,25 @@ pipeline {
         string(name: 'GITLAB_URL', defaultValue: 'https://code-repo.develop.devcond-test.net/user.tomoatsu.sekikawa/sfdx-sample.git', description: 'SFDXプロジェクト Gitlab URL')
         string(name: 'DEPLOY_BRANCH', defaultValue: 'develop/jenkins', description: 'デプロイ対象のブランチ')
         choice(name: 'IS_RUN_TEST', choices: ['TRUE', 'FALSE'], description: 'テストを実行するか')
-        // If set this key in each build
-        // string(name: 'CONSUMER_KEY', defaultValue: "${env.CONSUMER_KEY}", description: 'Salesforceへアクセスするコンシューマーキー')
+        // If codescan project do not need to be specified, then the followings can move in environments 
+        string(name: 'SONARQUBE_PRJ_KEY', defaultValue: 'sfdx-sample', description: 'Code.scan(sonar qube)のプロジェクトキー')
+        string(name: 'SONARQUBE_TOKEN', defaultValue: '6355d4d915da2fcc6fa12a5903cca9cf3e2abb53', description: 'code.scanのプロジェクトアクセストークン')
     }
     environment {
+        // Need to implement NodeJS plugin with installing sfdx-cli global
         NODEJS_HOME = "${tool 'NodeJS_SFDX'}"
         PATH = "${env.NODEJS_HOME}/bin:${env.PATH}"
-        // Assuming that devcond can use same server key in different salesforce org
-        SEVER_KEY = credentials('SFDX_SEVER_KEY')
-        CONSUMER_KEY = credentials('SFDX_CONSUMER_KEY')
+        // Need to set each environment
+        SEVER_KEY = credentials('SFDX_SEVER_KEY') // Need to set server key as 'SFDX_SEVER_KEY' key 
+        CONSUMER_KEY = credentials('SFDX_CONSUMER_KEY') // Need to set consumer key as 'SFDX_CONSUMER_KEY' key
+        SONARQUBE_SERVER_URL = "${env.SONARQUBE_SERVER_URL}" // Need to set sonarqube server url as 'SONARQUBE_SERVER_URL' key
     }
     stages {
         stage('Prepare') {
             steps {
                 // Setup gitlab
+                echo "INFO: Fetch gitlab source: url ${GITLAB_URL}"
+                // Need to set gitlab access user credential as 'gitlab-integrator' key
                 git credentialsId: 'gitlab-integrator',
                     url: "${GITLAB_URL}"
                 echo 'INFO: Build envionments of pipeline'
@@ -59,10 +64,16 @@ pipeline {
         stage('Test') {
             steps {
                 // INFO: The Apex test command will be executed on the connected org and cannot be tested prior to this release
+                // Apex test
+                // sh """
+                //     # sfdx force:apex:test:run --synchronous -w "-1" -c -v -r human --testlevel=RunLocalTests -u ${SFDX_USERNAME}
+                // """
+                // static analysis
                 sh """
-                    # echo y | sfdx plugins:install sfdx-codescan-plugin
-                    ## INFO: The following command will be executed on the connected org and cannot be tested prior to this release
-                    # sfdx force:apex:test:run --synchronous -w "-1" -c -v -r human --testlevel=RunLocalTests -u ${SFDX_USERNAME}
+                    if [ "${IS_RUN_TEST}" = "TRUE" ]; then
+                        echo y | sfdx plugins:install sfdx-codescan-plugin
+                        sfdx codescan:run --token ${SONARQUBE_TOKEN} --projectkey ${SONARQUBE_PRJ_KEY} --server ${SONARQUBE_SERVER_URL}
+                    fi
                 """
             }
         }
