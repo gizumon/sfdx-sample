@@ -6,7 +6,7 @@ SFDXの検証サンプルプロジェクト
 
 ## 調査レポート
 
-[リンク](./doc/result.md)
+[リンク](./docs/result.md)
 
 <br><br>
 

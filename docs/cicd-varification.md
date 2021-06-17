@@ -62,7 +62,7 @@ NodeJSをグローバルツールに設定__
 
 |環境変数|値|備考|
 |---|---|---|
-|SONARQUBE_SERVER_URL|http://XXX.XXX.XXX |SonarQubeが動作しているサーバーURL|
+|SONARQUBE_SERVER_URL|http://SonarQubeのURL |SonarQubeが動作しているサーバーURL|
 
 ### 1-4. 認証情報
 
@@ -72,7 +72,7 @@ NodeJSをグローバルツールに設定__
 * 下記を追加
 
 |認証名|種類|値|ID|備考|
-|---|---|---|---|---|---|
+|---|---|---|---|---|
 |SalesforceCLI認証キーファイル|Secret file|※server.key|SFDX_SEVER_KEY|※Salesforce組織でJWTベアラーフロー認証設定時に使用したServerキー情報([参考](./result.md#2-x-jwtベアラーフロー認証の設定))|
 |SalesforceCLI認証コンシューマーキー|Secret text|※consumer key|SFDX_SEVER_KEY|※Salesforce組織でJWTベアラーフロー認証設定後に生成されたコンシューマーキー([参考](./result.md#2-x-jwtベアラーフロー認証の設定))|
 
@@ -134,7 +134,20 @@ sfdx force:source:convert -d ./release
 
 ### 2-3. テスト
 
-TBD
+__Apexテスト__
+
+SFDXコマンドを用いたApexのテストは環境上で実行されるため、
+リリース時に併せてテストするオプションを追加しています。
+
+```bash
+sfdx force:mdapi:deploy -w "-1" -d ./release -u sfdx  --testlevel=RunLocalTests
+```
+
+* testlevelには、全てのテスト実行や指定したテストのみ実行、テストを実行しないなどが指定可能です。
+
+__静的解析__
+
+[こちら](./test-varification.md)に詳細を記載しています。
 
 <br>
 
@@ -155,13 +168,11 @@ sfdx force:mdapi:deploy -w "-1" -d ./release -u sfdx  --testlevel=NoTestRun
 * -u: 認証時に設定したDevhub環境のエイリアスを指定
 * --testlevel: デプロイ時に実行するテストを
 
-<br>
-
 <details><summary>※備考：</summary>
 
-下記の様にソース形式のまま(メタデータ変換)しないままでも、リリースが可能。
+下記の様にソース形式のまま(メタデータ変換)しないままでも、リリースが可能
 ただし、不安定との評価が多々あったため、
-本検証内ではソース形式でGIT管理し、リリース時にメタデータに変換する手法とする。
+本検証内ではソース形式でGIT管理し、リリース時にメタデータに変換する手法として作成
 
 ```bash
 # メタデータ形式のデプロイ
@@ -171,7 +182,7 @@ sfdx force:mdapi:deploy
 sfdx force:source:deploy
 ```
 
-将来的に、パッケージ開発の適用・移行が可能であれば、[こちら](https://developer.salesforce.com/docs/atlas.ja-jp.sfdx_dev.meta/sfdx_dev/sfdx_dev_dev2gp.htm)の2GPリリースの方がCI/CD適用性が高い様に見える
+将来的に、パッケージ開発の適用・移行が可能であれば、[こちら](https://developer.salesforce.com/docs/atlas.ja-jp.sfdx_dev.meta/sfdx_dev/sfdx_dev_dev2gp.htm)の2GPリリースの方がCI/CDにも適している様に見える
 
 </details>
 

@@ -47,6 +47,10 @@ SFDX化によるソース駆動型の開発により、バージョン管理シ�
 * VScode
   * Version: 1.56.2 (Universal)
 * Gitlab
+* Salesforce Developer Edition
+  * URL: https://scsk72-dev-ed.lightning.force.com
+  * user: jenkins@service.dev.com
+  * pass: [XXXXXX](https://docs.google.com/spreadsheets/d/1Zs8IBC7-kRNVsTGKOT3AGzNp1-QCaXtfWyRjfTzUyvg/edit#gid=1214262664)
 
 ### 2-1. DevHubの有効化 (初回のみ)
 
