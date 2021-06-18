@@ -2,48 +2,23 @@
 
 SFDXによるソースコードベースの開発を目的として検証
 
-## 0. アジェンダ
+## アジェンダ
 
-* [1. 導入](#1-導入)
+* [1. 環境](#1-環境)
 * [2. スクラッチ環境導入設定手順](#2-スクラッチ環境導入設定手順)
 * [3. APPENDIX](#3-appendix)
 * [4. Tips](#4-tips)
-* [5. Demo](#5-demo)
 
-## 1. 導入
-
-### 1-1. SFDX化によるメリット
-
-SFDX化によるソース駆動型の開発により、バージョン管理システムなどを採用でき、下記の様なメリットが得られる見込み。
-
-* Salesforce開発・運用プロセスの効率化
-  * 手作業によるリリースプロセスを自動化可能にする
-* 改修差分と環境差分の管理
-  * 改修差分や履歴を追跡可能にし、環境の差異も可視化可能にする
-* ソースの完全性担保
-  * 各環境間のリソースが一致することをシステム的に担保可能にする
-
-## 2. スクラッチ環境導入設定手順
-
-|No.|項目||①初期設定時|②設定済み + ソースがGit管理されている場合|③設定済み + ローカルにソース保管済み|
-|---|---|---|:---:|:---:|:---:|
-|2-0|[環境](#2-0-環境)||●|●|●|
-|2-1|[DevHubの有効化](#2-1-devhubの有効化-初回のみ)||●|||
-|2-2|[ローカル環境にプロジェクトを作成](#2-2-ローカル環境にプロジェクトを作成)||●|● ※③||
-|2-3|[スクラッチ組織の起動〜変更](#2-3-スクラッチ組織の起動変更)||●|●|●|
-|2-4|[ソースへの反映](#2-4-ソースへの反映)||●|●|●|
-|2-X|[オプション：JWTベアラーフロー認証の設定](#2-x-jwtベアラーフロー認証の設定)||●|||
-
-### 2-0. 環境
+## 1. 環境
 
 本検証時に使用した環境情報
 
-* 本番組織
+* Salesforce本番組織
   * Salesforce Developer Edition
     * URL: https://scsk72-dev-ed.lightning.force.com
   * サービスアカウント
     * user: jenkins@service.dev.com
-    * pass: [XXXXXX](https://docs.google.com/spreadsheets/d/1Zs8IBC7-kRNVsTGKOT3AGzNp1-QCaXtfWyRjfTzUyvg/edit#gid=1214262664)
+    * pass: [XXXXXX](../jenkins-sample/certifications/memo.md)
 * salesforce CLI
   * sfdx-cli/7.102.0 darwin-x64 node-v16.1.0
 * Git
@@ -51,6 +26,20 @@ SFDX化によるソース駆動型の開発により、バージョン管理シ�
 * VScode
   * Version: 1.56.2 (Universal)
 * Gitlab
+* Docker
+  * Docker version 20.10.6, build 370c289
+* Docker Compose
+  * docker-compose version 1.29.1, build c34c88b2
+
+## 2. スクラッチ環境導入設定手順
+
+|No.|項目||①初期設定時|②設定済み + ソースがGit管理されている場合|③設定済み + ローカルにソース保管済み|
+|---|---|---|:---:|:---:|:---:|
+|2-1|[DevHubの有効化](#2-1-devhubの有効化-初回のみ)||●|||
+|2-2|[ローカル環境にプロジェクトを作成](#2-2-ローカル環境にプロジェクトを作成)||●|● ※③||
+|2-3|[スクラッチ組織の起動〜変更](#2-3-スクラッチ組織の起動変更)||●|●|●|
+|2-4|[ソースへの反映](#2-4-ソースへの反映)||●|●|●|
+|2-X|[オプション：JWTベアラーフロー認証の設定](#2-x-jwtベアラーフロー認証の設定)||●|||
 
 ### 2-1. DevHubの有効化 (初回のみ)
 
@@ -158,20 +147,21 @@ __③既にGit管理しているプロジェクトがある場合：__
 
 ## 3. APPENDIX
 
-### 3-1. 開発・運用フロー案
-
-### 3-2. CI/CDフロー案
+### 3-1. CI/CDフロー案
 
 * [こちら](./cicd-varification.md)を参照ください
 
-### 3-3. 参考文献
+### 3-2. 参考文献
 
 * [SFDX初期導入リファレンス](https://qiita.com/yhayashi30/items/80dd868f2e15aac67072)
-* [メタデータに含まれない変更](https://developer.salesforce.com/docs/atlas.ja-jp.api_meta.meta/api_meta/meta_unsupported_types.htm)
 
-### 3-4. 課題
+### 3-3. 課題
 
 * 別途、SFDX検証管理シートの課題に記載しています。
+
+## 3-4. Demo
+
+デモシナリオは、[こちら](./demo.md)
 
 ## 4. Tips
 
@@ -291,7 +281,3 @@ java.lang.IllegalStateException: Fail to unzip plugin [codescanlang] /opt/sonarq
 ⇨　Dockerの許容メモリ上限設定の変更をお試しください。
 
 </details>
-
-## 5. Demo
-
-デモシナリオは、[こちら](./demo.md)

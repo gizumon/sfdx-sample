@@ -37,6 +37,7 @@ $RECYCLE.BIN/
 ### Custom
 # Jenkins
 jenkins-sample/certifications/*
+!jenkins-sample/certifications/*.md
 jenkins-sample/jenkins_home/*
 
 # Artifact
@@ -55,3 +56,6 @@ jenkins-sample/sonarqube/postgresql_data/*
 
 .scannerwork/
 .project.license
+
+!jenkins-sample/sonarqube/logs/
+!.gitkeep

@@ -4,9 +4,16 @@ Salesforceに適用可能なテスト自動化ツールを検証する目的
 
 ## 0. アジェンダ
 
-* [1. Salesforce標準Apexテスト](1-salesforce標準apexテスト)
-* [2. 静的解析テスト](2-静的解析テスト)
-* 
+- [テスト自動化検証](#テスト自動化検証)
+  - [0. アジェンダ](#0-アジェンダ)
+  - [1. Salesforce標準Apexテスト](#1-salesforce標準apexテスト)
+    - [1-1. ApexTestの実行](#1-1-apextestの実行)
+  - [2. Salesforceの静的解析](#2-salesforceの静的解析)
+  - [3. Sonar cubeの設定・起動](#3-sonar-cubeの設定起動)
+    - [3-1. Code scanインストール](#3-1-code-scanインストール)
+    - [3-2. Code scanの実行](#3-2-code-scanの実行)
+    - [3-3. Jenkinsとの連携](#3-3-jenkinsとの連携)
+  - [X. リファレンス](#x-リファレンス)
 
 ## 1. Salesforce標準Apexテスト
 
@@ -42,20 +49,22 @@ sfdx force:apex:test:run --synchronous -w -1 -c -v -r human --testlevel=RunLocal
 
 <br>
 
-## 2. 静的解析テスト
+## 2. Salesforceの静的解析
 
-調査対象洗い出し
+* Sonar Cubeとの親和性の観点から、[code.scan](https://www.codescan.io/)をメインで調査
+  * Cloud版とSelf-Hosted版があり、Self-Hosted版がSonarQubeのプラグインとして導入可能なバージョン
 
-|No.|ツール名|無料枠有無|特徴|参考価格|対象|備考|
-|---|---|---|---|---|---|---|
-|1|[code.scan](https://www.codescan.io/)|？|sonarcubeのPluginとして利用可能。|?|Apex, meta-data, visual force|Cloud版とSelf-Host版有り|
-|2|[Clayton](https://www.getclayton.com/)|？|リポジトリ登録型でプリリクエストで指摘、提案してくれる模様|最低$540/月|Apex||
-|3|[PMD Apex](https://github.com/pmd/pmd)|OSS|無料|Apex||
-|4|[salesforce-sonar-plugin](https://github.com/SalesforceFoundation/salesforce-sonar-plugin)|OSS|無料|Apex|pmdを利用。対象Apexのみ|
+その他
 
-* Sonar Cubeとの親和性の観点から、`code.scan`をメインで調査
+* SonarQubeのプラグインとして、利用可能な[Salesforce PDM](https://github.com/SalesforceFoundation/salesforce-sonar-plugin)も利用可能
+  * 上記のURLよりクローンしてきたソースをmvnでビルドし、プラグインを生成
+  * extensions配下に配置して、起動でプラグインは起動
+  * ※指摘やレポートを見るまでの動作は未検証
 
-### 2-1. Sonar cubeの設定・起動
+## 3. Sonar cubeの設定・起動
+
+SonarQubeに適用可能なプラグインで調査
+
 
 * docker-composeにsonar-cubeを追加。
   * [docker-compose.yml](../jenkins-sample/docker-compose.yml)
@@ -79,7 +88,7 @@ sfdx force:apex:test:run --synchronous -w -1 -c -v -r human --testlevel=RunLocal
   * プロジェクトのルートにsonar-project.propertiesを追加
   * sfdxのプラグインを利用する場合は、インストール不要
 
-### 2-2. Code scanインストール
+### 3-1. Code scanインストール
 
 __①SonarQubeのプラグインインストール__
 
@@ -92,12 +101,55 @@ __①SonarQubeのプラグインインストール__
 
 __②SFDXのプラグインインストール__
 
+下記のコマンドより、sfdx経由でCodeScanを実行可能なプラグインが入手可能
+
 ```bash
 sfdx plugins:install sfdx-codescan-plugin
 ```
 
-### 2-3. Code scanの実行
+### 3-2. Code scanの実行
 
+CodeScanの実行には以下の設定が必要です。
+
+* プロジェクトの作成
+  * Projectsタブ > Create new project
+  * 下記で作成します
+    * Project key: sfdx-sample
+    * Display name: sfdx-sample
+    * Generate a token: sfdx-sample-codescan
+  * 生成されたトークン情報はクライアント側で使用します
+
+* CodeScanのライセンスを更新します
+  * [Administration > CodeScan](http://localhost:9000/admin/settings?category=codescan) にアクセスします
+  * CodeScan license欄を以下に更新します
+    * [こちらのCodeScanライセンスを参照](../jenkins-sample/certifications/memo.md#codescan)
+
+* クライアント側でCodeScan(SonarQube)を実行
+
+  ```bash
+  sonar-scanner \
+    -Dsonar.projectKey=[プロジェクトキー] \
+    -Dsonar.sources=[Sourceディレクトリ] \
+    -Dsonar.host.url=[SonarQube動作環境URL] \
+    -Dsonar.login=[プロジェクトアクセストークン]
+  ```
+
+### 3-3. Jenkinsとの連携
+
+* Jenkins側でsfdx-poc-sampleのジョブを使用します。([こちら](./cicd-varification.md#1-6-ジョブ設定)で作成)
+  * パラメータ付きビルドを選択 ([URL]( http://localhost:18080/job/sfdx-poc-sample/build?delay=0sec))
+  * 下記のパラメータを変更して実行
+    * IS_RUN_STATIC_ANALYSIS: TRUE
+    * SONARQUBE_TOKEN: 上の工程で生成したトークンを貼り付け
+
+* Jenkinsではsfdxのcodescanプラグインを使用して、下記のコマンドを実行します
+  
+  ```bash
+  # CodeScan Pluginのインストール
+  sfdx plugins:install sfdx-codescan-plugin
+  # CodeScan Pluginの実行
+  sfdx codescan:run --token [SonarQubeのプロジェクトトークン] --projectkey [プロジェクトキー] --server [SonarQubeサーバーのURL]
+  ```
 
 ## X. リファレンス
 

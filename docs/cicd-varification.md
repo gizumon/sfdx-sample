@@ -4,18 +4,24 @@ DevCondへの導入を目的として、JenkinsCI/CD pipelineの構築を検討
 
 ## 0. アジェンダ
 
-* [1. Jenkins設定](#1-jenkins設定)
-  * [1-1. プラグイン](#1-1-プラグイン)
-  * [1-2. グローバルツール設定](#1-2-グローバルツール設定)
-  * [1-3. 環境変数](#1-3-環境変数)
-  * [1-4. 認証情報](#1-4-認証情報)
-  * [1-5. 入力パラメータ](#1-5-入力パラメータ)
-* [2. CI/CDフロー](#2-CI/CDフロー)
-  * [2-1. 認証](2-1-認証)
-  * [2-2. ビルド(ソース変換)](2-2-ビルドソース変換)
-  * [2-3. テスト](2-3-テスト)
-  * [2-4. デプロイ](2-4-デプロイ)
-* [X. APPENDIX](#x-appendix)
+- [CI/CD検証](#cicd検証)
+  - [0. アジェンダ](#0-アジェンダ)
+  - [1. Jenkins設定](#1-jenkins設定)
+    - [1-1. プラグイン](#1-1-プラグイン)
+    - [1-2. グローバルツール設定](#1-2-グローバルツール設定)
+    - [1-3. 環境変数](#1-3-環境変数)
+    - [1-4. 認証情報](#1-4-認証情報)
+    - [1-5. 入力パラメータ](#1-5-入力パラメータ)
+    - [1-6. ジョブ設定](#1-6-ジョブ設定)
+  - [2. CI/CDフロー](#2-cicdフロー)
+    - [2-1. 認証](#2-1-認証)
+    - [2-2. ビルド(ソース変換)](#2-2-ビルドソース変換)
+    - [2-3. テスト](#2-3-テスト)
+    - [2-4. デプロイ](#2-4-デプロイ)
+  - [X. APPENDIX](#x-appendix)
+    - [X-1. Jenkins user](#x-1-jenkins-user)
+    - [X-2. Jenkins動作確認環境の構築](#x-2-jenkins動作確認環境の構築)
+    - [その他リファレンス](#その他リファレンス)
 
 ## 1. Jenkins設定
 
@@ -26,6 +32,7 @@ DevCondへの導入を目的として、JenkinsCI/CD pipelineの構築を検討
 |1-3|[環境変数](#1-3-環境変数)||
 |1-4|[認証情報](#1-4-認証情報)||
 |1-5|[入力パラメータ](#1-5-入力パラメータ)||
+|1-6|[ジョブ設定](#1-6-ジョブ設定)
 
 ### 1-1. プラグイン
 
@@ -64,6 +71,9 @@ NodeJSをグローバルツールに設定__
 |---|---|---|
 |SONARQUBE_SERVER_URL|http://SonarQubeのURL |SonarQubeが動作しているサーバーURL|
 
+* ローカルホストのSonarQube参照する場合: http://localhost:9000
+* DevCond. Dev環境参照する場合: https://code-analysis.develop.devcond-test.net/
+
 ### 1-4. 認証情報
 
 認証情報を追加
@@ -71,10 +81,11 @@ NodeJSをグローバルツールに設定__
 * Dashboard > Jenkinsの管理 > Manage Credentials > 追加
 * 下記を追加
 
-|認証名|種類|値|ID|備考|
+|説明|種類|値|ID|備考|
 |---|---|---|---|---|
 |SalesforceCLI認証キーファイル|Secret file|※server.key|SFDX_SEVER_KEY|※Salesforce組織でJWTベアラーフロー認証設定時に使用したServerキー情報([参考](./result.md#2-x-jwtベアラーフロー認証の設定))|
-|SalesforceCLI認証コンシューマーキー|Secret text|※consumer key|SFDX_SEVER_KEY|※Salesforce組織でJWTベアラーフロー認証設定後に生成されたコンシューマーキー([参考](./result.md#2-x-jwtベアラーフロー認証の設定))|
+|SalesforceCLI認証コンシューマーキー|Secret text|※consumer key|SFDX_CONSUMER_KEY|※Salesforce組織でJWTベアラーフロー認証設定後に生成されたコンシューマーキー([参考](./result.md#2-x-jwtベアラーフロー認証の設定))|
+|Gitlabアクセスユーザー|ユーザー名とパスワード|※GITアクセス可能なユーザー名とパスワードを登録|gitlab-integrator|DevCondのユーザー利用するため、検証環境もこちらのIDで定義|
 
 ### 1-5. 入力パラメータ
 
@@ -91,19 +102,50 @@ NodeJSをグローバルツールに設定__
 |SONARQUBE_PRJ_KEY|Code.scan(SonarQube)のプロジェクトキー|IS_RUN_STATIC_ANALYSISがTrueの場合に必要|
 |SONARQUBE_TOKEN|code.scanのプロジェクトアクセストークン|IS_RUN_STATIC_ANALYSISがTrueの場合に必要|
 
+### 1-6. ジョブ設定
+
+SFDXのサンプルジョブを設定
+
+1. ダッシュボード > 新規ジョブを作成 を選択
+
+2. パイプラインを選択し、任意のジョブ名をつける
+
+3. パイプライン > 定義 で'Pipeline script from SCM'を選択
+
+4. SCMで 'Git' を選択
+
+5. リポジトリURLでサンプルのJenkinsfileを配置している下記を指定
+
+    ```txt
+    https://code-repo.develop.devcond-test.net/user.tomoatsu.sekikawa/sfdx-sample.git
+    ```
+
+6. 認証情報を追加し、指定
+'ユーザー名とパスワード' でGitのログイン情報を指定
+
+7. ビルドするブランチ に 'develop/jenkins' を指定
+
+8. ScriptPath に下記を指定
+
+    ```txt
+    jenkins-sample/jenkinsfiles/sfdx-sample.groovy
+    ```
+
+9. 保存 を押下
+
 ## 2. CI/CDフロー
 
 |No.|項目|備考|
 |---|---|---|
-|2-1|[認証](2-1-認証)||
-|2-2|[ビルド(ソース変換)](2-2-ビルドソース変換)||
-|2-3|[テスト](2-3-テスト)||
-|2-4|[デプロイ](2-4-デプロイ)||
+|2-1|[認証](#2-1-認証)||
+|2-2|[ビルド(ソース変換)](#2-2-ビルドソース変換)||
+|2-3|[テスト](#2-3-テスト)||
+|2-4|[デプロイ](#2-4-デプロイ)||
 
 ### 2-1. 認証
 
 ```bash
-sfdx force:auth:jwt:grant -i ${CONSUMER_KEY} -u ${SFDX_USERNAME} -f ${SFDX_SEVER_KEY} -a sfdx
+sfdx force:auth:jwt:grant -i ${CONSUMER_KEY} -u ${SFDX_USERNAME} -f ${SFDX_SERVER_KEY} -a sfdx
 ```
 
 * -u: ログインするユーザー名を指定

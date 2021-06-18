@@ -10,7 +10,7 @@ pipeline {
         choice(name: 'IS_RUN_STATIC_ANALYSIS', choices: ['FALSE', 'TRUE'], description: '静的解析を実行するか')
         // If codescan project do not need to be specified, then the followings can move in environments 
         string(name: 'SONARQUBE_PRJ_KEY', defaultValue: 'sfdx-sample', description: 'Code.scan(sonar qube)のプロジェクトキー')
-        string(name: 'SONARQUBE_TOKEN', defaultValue: '7c17f8e7507930e864c39c07c83ca725fb406a2f', description: 'code.scanのプロジェクトアクセストークン')
+        string(name: 'SONARQUBE_TOKEN', defaultValue: 'db9967908b639654e526c31a794da2b718eac0dd', description: 'code.scanのプロジェクトアクセストークン (デフォルトは開発環境のSonarQubeのプロジェクトアクセストークン)')
     }
     environment {
         // Need to implement NodeJS plugin with installing sfdx-cli global
@@ -29,17 +29,28 @@ pipeline {
                 // Need to set gitlab access user credential as 'gitlab-integrator' key
                 git credentialsId: 'gitlab-integrator',
                     url: "${GITLAB_URL}"
-                echo 'INFO: Build envionments of pipeline'
                 sh "git checkout -B deploy origin/${DEPLOY_BRANCH}"
+                echo 'INFO: Show build envionments and parameters of this pipeline'
                 sh '''
                     mkdir -p ./release
                     node -v > ./release/build-environment.txt
                     npm -v >> ./release/build-environment.txt
                     sfdx -v >> ./release/build-environment.txt
                 '''
+                sh """
+                    echo STAGE = ${STAGE} > ./release/build-parameters.txt
+                    echo SFDX_USERNAME = ${SFDX_USERNAME} >> ./release/build-parameters.txt
+                    echo GITLAB_URL = ${GITLAB_URL} >> ./release/build-parameters.txt
+                    echo DEPLOY_BRANCH = ${DEPLOY_BRANCH} >> ./release/build-parameters.txt
+                    echo IS_RUN_APEX_TEST = ${IS_RUN_APEX_TEST} >> ./release/build-parameters.txt
+                    echo IS_RUN_STATIC_ANALYSIS = ${IS_RUN_STATIC_ANALYSIS} >> ./release/build-parameters.txt
+                    echo SONARQUBE_PRJ_KEY = ${SONARQUBE_PRJ_KEY} >> ./release/build-parameters.txt
+                    echo SONARQUBE_TOKEN = ${SONARQUBE_TOKEN} >> ./release/build-parameters.txt
+                """
                 // Login Salesforce Org
                 echo "INFO: Login ${STAGE} envionments of pipeline as ${SFDX_USERNAME} user"
                 sh """
+                    sfdx auth:logout -p --targetusername sfdx || echo 'Already logout'
                     if [ "${STAGE}" = "PROD" ]; then
                         # Login PROD org
                         sfdx force:auth:jwt:grant -i ${CONSUMER_KEY} -u ${SFDX_USERNAME} -f ${SERVER_KEY} -a sfdx
