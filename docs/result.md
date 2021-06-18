@@ -1,14 +1,14 @@
-# SFDXお試し
+# SFDX検証の結果
 
 SFDXによるソースコードベースの開発を目的として検証
 
 ## 0. アジェンダ
 
 * [1. 導入](#1-導入)
-* [2. 初期設定手順](#2-初期設定手順)
+* [2. スクラッチ環境導入設定手順](#2-スクラッチ環境導入設定手順)
 * [3. APPENDIX](#3-appendix)
 * [4. Tips](#4-tips)
-* [5. Demo](#5-Demo)
+* [5. Demo](#5-demo)
 
 ## 1. 導入
 
@@ -23,9 +23,9 @@ SFDX化によるソース駆動型の開発により、バージョン管理シ�
 * ソースの完全性担保
   * 各環境間のリソースが一致することをシステム的に担保可能にする
 
-## 2. 初期設定手順
+## 2. スクラッチ環境導入設定手順
 
-|No.|項目||①初期SFDX設定時|②SFDX設定済み + ソースがGit管理されている場合|③ローカルにSFDXプロジェクト作成後|
+|No.|項目||①初期設定時|②設定済み + ソースがGit管理されている場合|③設定済み + ローカルにソース保管済み|
 |---|---|---|:---:|:---:|:---:|
 |2-0|[環境](#2-0-環境)||●|●|●|
 |2-1|[DevHubの有効化](#2-1-devhubの有効化-初回のみ)||●|||
@@ -39,7 +39,11 @@ SFDX化によるソース駆動型の開発により、バージョン管理シ�
 本検証時に使用した環境情報
 
 * 本番組織
-  * Developer Edition ※サンプルプロジェクトのため
+  * Salesforce Developer Edition
+    * URL: https://scsk72-dev-ed.lightning.force.com
+  * サービスアカウント
+    * user: jenkins@service.dev.com
+    * pass: [XXXXXX](https://docs.google.com/spreadsheets/d/1Zs8IBC7-kRNVsTGKOT3AGzNp1-QCaXtfWyRjfTzUyvg/edit#gid=1214262664)
 * salesforce CLI
   * sfdx-cli/7.102.0 darwin-x64 node-v16.1.0
 * Git
@@ -47,14 +51,12 @@ SFDX化によるソース駆動型の開発により、バージョン管理シ�
 * VScode
   * Version: 1.56.2 (Universal)
 * Gitlab
-* Salesforce Developer Edition
-  * URL: https://scsk72-dev-ed.lightning.force.com
-  * user: jenkins@service.dev.com
-  * pass: [XXXXXX](https://docs.google.com/spreadsheets/d/1Zs8IBC7-kRNVsTGKOT3AGzNp1-QCaXtfWyRjfTzUyvg/edit#gid=1214262664)
 
 ### 2-1. DevHubの有効化 (初回のみ)
 
 スクラッチ組織を有効化するためにDevHubの設定を更新
+
+* 設定 > クイック検索: Dev Hub
 
 ![DevHub設定](./assets/setting_for_devhub_org.PNG)
 
@@ -147,7 +149,7 @@ __③既にGit管理しているプロジェクトがある場合：__
 
 ### 2-X. JWTベアラーフロー認証の設定
 
-* CI/CDでCLIベースの認証を可能にする目的のため、オプション操作
+* CI/CDでCLIベースの認証を可能にする場合に設定が必要
 * Salesforceの本番組織上で、下記よりJWTベアラーフロー認証設定を実施
   * 設定　⇨　Lightning Experience アプリケーションマネージャ ⇨ 新規接続アプリケーション
   * 設定の詳細は[こちら](https://developer.salesforce.com/docs/atlas.ja-jp.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_jwt_flow.htm)を参考にください
@@ -164,16 +166,16 @@ __③既にGit管理しているプロジェクトがある場合：__
 
 ### 3-3. 参考文献
 
-* [Qiita記事](https://qiita.com/yhayashi30/items/80dd868f2e15aac67072)
+* [SFDX初期導入リファレンス](https://qiita.com/yhayashi30/items/80dd868f2e15aac67072)
 * [メタデータに含まれない変更](https://developer.salesforce.com/docs/atlas.ja-jp.api_meta.meta/api_meta/meta_unsupported_types.htm)
 
 ### 3-4. 課題
 
-* デプロイの方法について、ソース形式とメタデータ形式どちらを採用するか。
-  * ソース方式のリリースはバグが残存、メタデータ形式の開発はバージョン管理が困難なため、ソース方式で開発しリリース時にメタデータ形式に変換してリリースする方法を検討。
-  * [参考](https://scrapbox.io/nesiyama/%5BSalesforce_CLI%5D_force:source_%E3%81%A8_force:mdapi_%E3%81%A3%E3%81%A6%E3%81%A9%E3%81%86%E9%81%95%E3%81%86%E3%81%AE%EF%BC%9F)
+* 別途、SFDX検証管理シートの課題に記載しています。
 
 ## 4. Tips
+
+検証進める上でつまづいたところと、その解消方法を下記にまとめ
 
 ### 4-1. スクラッチ組織の作成ができない。。。 (1)
 
@@ -283,11 +285,10 @@ java.lang.IllegalStateException: Fail to unzip plugin [codescanlang] /opt/sonarq
 
 <details><summary>解決方法</summary>
 
-UnZipに失敗している模様。
-原因調査したが、特定まで至らなかったが、
-Dockerの許容メモリを2GBから4GBにあげることで解消すること確認。
+* UnZipに失敗している模様だが、原因特定まで至らず。。。
+* ただし、Dockerの許容メモリを2GBから4GBにあげることで解消すること確認。
 
-⇨　Dockerの許容メモリ上限をあげることお試しください。
+⇨　Dockerの許容メモリ上限設定の変更をお試しください。
 
 </details>
 

@@ -6,7 +6,11 @@ SFDXの検証サンプルプロジェクト
 
 ## 調査レポート
 
-[リンク](./docs/result.md)
+* [sfdx調査結果](./docs/result.md)
+* [デモシナリオ](./docs/demo.md)
+* [SFDX-Jenkins CI/CD設定](./docs/cicd-varification.md)
+* [Salesforce向けテスト調査](./docs/test-varification.md)
+* [接続情報](./jenkins-sample/certificaitons/memo.md)
 
 <br><br>
 

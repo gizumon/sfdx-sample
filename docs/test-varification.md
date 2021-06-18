@@ -4,6 +4,9 @@ Salesforceに適用可能なテスト自動化ツールを検証する目的
 
 ## 0. アジェンダ
 
+* [1. Salesforce標準Apexテスト](1-salesforce標準apexテスト)
+* [2. 静的解析テスト](2-静的解析テスト)
+* 
 
 ## 1. Salesforce標準Apexテスト
 
@@ -39,20 +42,18 @@ sfdx force:apex:test:run --synchronous -w -1 -c -v -r human --testlevel=RunLocal
 
 <br>
 
-## 2. 静的解析テスト対象
+## 2. 静的解析テスト
 
-|No.|ツール名|無料枠有無|特徴|参考価格|
-|---|---|---|---|---|
-|1|[code.scan](https://www.codescan.io/)|？|sonarcubeのPluginとして利用可能。|?|
-|2|[Clayton](https://www.getclayton.com/)|？|リポジトリ登録型でプリリクエストで指摘、提案してくれる模様|最低$540/月|
-|3|[PMD Apex](https://github.com/pmd/pmd)|OSS|無料|
-|4|[salesforce-sonar-plugin](https://github.com/SalesforceFoundation/salesforce-sonar-plugin)|OSS|無料|
+調査対象洗い出し
 
-* Sonar Cubeとの親和性の観点から、`code.scan`を調査
+|No.|ツール名|無料枠有無|特徴|参考価格|対象|備考|
+|---|---|---|---|---|---|---|
+|1|[code.scan](https://www.codescan.io/)|？|sonarcubeのPluginとして利用可能。|?|Apex, meta-data, visual force|Cloud版とSelf-Host版有り|
+|2|[Clayton](https://www.getclayton.com/)|？|リポジトリ登録型でプリリクエストで指摘、提案してくれる模様|最低$540/月|Apex||
+|3|[PMD Apex](https://github.com/pmd/pmd)|OSS|無料|Apex||
+|4|[salesforce-sonar-plugin](https://github.com/SalesforceFoundation/salesforce-sonar-plugin)|OSS|無料|Apex|pmdを利用。対象Apexのみ|
 
-## 3. 対象ツール調査詳細
-
-[code.scan](https://www.codescan.io/)を対象として、静的解析の適用調査。
+* Sonar Cubeとの親和性の観点から、`code.scan`をメインで調査
 
 ### 2-1. Sonar cubeの設定・起動
 
@@ -64,21 +65,32 @@ sfdx force:apex:test:run --synchronous -w -1 -c -v -r human --testlevel=RunLocal
   docker-compose up -d
   ```
 
-  * user: admin, pass: admin
+  * ユーザーはデフォルトで存在する以下を使用
+    * user: admin, pass: admin
 
 |key|value|備考|
+|---|---|---|
 |project key|sfdx-sample||
 |token(name)|sfdx-sample-codescan||
-|token(val)|[XXX](../.sfdx/memo.md)|※別途連携|
+|token(val)|[XXX](../jenkins-sample/certifications/memo.md)|※ドキュメント参照|
 
-* Sonar Scanerの導入
+* Sonar Scannerの導入
   * 検証用でローカルに導入 ([参考](https://docs.sonarqube.org/latest/analysis/scan/sonarscanner/))
   * プロジェクトのルートにsonar-project.propertiesを追加
-  
+  * sfdxのプラグインを利用する場合は、インストール不要
 
-### 2-2. Code scanのインストール
+### 2-2. Code scanインストール
 
-SFDXのプラグインよりインストール
+__①SonarQubeのプラグインインストール__
+
+* SonarQubeコンテナ内のpluginsディレクトリ内にjarファイルを配置
+  * /opt/sonarqube/extensions/plugins/sonar-salesforce-plugin-4.5.6.jar
+  * /opt/sonarqube/extensions/plugins/sonar-codescanlang-plugin-4.5.6.jar
+* コンテナを再起動
+* Administration > Configuration > CodeScanが表示されていればインストール完了
+  * CodeScanの利用には、[ライセンスの申請と設定](https://docs.codescan.io/hc/en-us/articles/360011885512-Installing-CodeScan-Self-Hosted)が必要
+
+__②SFDXのプラグインインストール__
 
 ```bash
 sfdx plugins:install sfdx-codescan-plugin

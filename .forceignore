@@ -12,6 +12,6 @@ package.xml
 **/__tests__/**
 
 # Custom setting
-doc/**
+docs/**
 jenkins-sample/**
 artifact/**
