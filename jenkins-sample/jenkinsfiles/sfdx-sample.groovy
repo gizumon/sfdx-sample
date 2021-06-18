@@ -18,7 +18,7 @@ pipeline {
         PATH = "${env.NODEJS_HOME}/bin:${env.PATH}"
         // Need to set the following environments and credentials
         SONARQUBE_SERVER_URL = "${env.SONARQUBE_SERVER_URL}" // Need to set sonarqube server url as 'SONARQUBE_SERVER_URL' key
-        SEVER_KEY = credentials('SFDX_SEVER_KEY') // Need to set server key as 'SFDX_SEVER_KEY' key 
+        SERVER_KEY = credentials('SFDX_SERVER_KEY') // Need to set server key as 'SFDX_SERVER_KEY' key 
         CONSUMER_KEY = credentials('SFDX_CONSUMER_KEY') // Need to set consumer key as 'SFDX_CONSUMER_KEY' key
     }
     stages {
@@ -42,11 +42,11 @@ pipeline {
                 sh """
                     if [ "${STAGE}" = "PROD" ]; then
                         # Login PROD org
-                        sfdx force:auth:jwt:grant -i ${CONSUMER_KEY} -u ${SFDX_USERNAME} -f ${SEVER_KEY} -a sfdx
+                        sfdx force:auth:jwt:grant -i ${CONSUMER_KEY} -u ${SFDX_USERNAME} -f ${SERVER_KEY} -a sfdx
                     else
                         # Login TEST org
                         # TODO: Check actual sandbox org because there is no Sandbox in DeveloperEditon.
-                        sfdx force:auth:jwt:grant -i ${CONSUMER_KEY} -u ${SFDX_USERNAME} -f ${SEVER_KEY} -a sfdx --instanceurl https://test.salesforce.com
+                        sfdx force:auth:jwt:grant -i ${CONSUMER_KEY} -u ${SFDX_USERNAME} -f ${SERVER_KEY} -a sfdx --instanceurl https://test.salesforce.com
                     fi
                 """
             }
