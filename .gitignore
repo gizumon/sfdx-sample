@@ -33,3 +33,29 @@ Thumbs.db
 ehthumbs.db
 [Dd]esktop.ini
 $RECYCLE.BIN/
+
+### Custom
+# Jenkins
+jenkins-sample/certifications/*
+!jenkins-sample/certifications/*.md
+jenkins-sample/jenkins_home/*
+
+# Artifact
+artifact/*
+
+# build
+temp/
+
+# Sonar Qube
+jenkins-sample/sonarqube/conf/*
+jenkins-sample/sonarqube/data/*
+# jenkins-sample/sonarqube/extensions/*
+jenkins-sample/sonarqube/logs/*
+jenkins-sample/sonarqube/postgresql/*
+jenkins-sample/sonarqube/postgresql_data/*
+
+.scannerwork/
+.project.license
+
+!jenkins-sample/sonarqube/logs/
+!.gitkeep

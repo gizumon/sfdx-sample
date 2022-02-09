@@ -1,12 +1,51 @@
-# Purpose
-## This project is just a sample for sfdx project.
+# SFDXの検証サンプルプロジェクト
+
+SFDXの検証とDevCond.適用を目的としたサンプル
 
 <br>
 
-# Result
-## [inspection report](./doc/result.md) is here.
+## SFDX化によるメリット
+
+SFDX化によるソース駆動型の開発により、
+バージョン管理システムなどの恩恵を受けることができ、
+下記の様なメリットが得られる見込みです
+
+* Salesforce開発・運用プロセスの効率化
+  * 手作業によるリリースプロセスを自動化可能にする
+* 改修差分と環境差分の管理
+  * 改修差分や履歴を追跡可能にし、環境の差異も可視化可能にする
+* ソースの完全性担保
+  * 各環境間のリソースが一致することをシステム的に担保可能にする
 
 <br>
+
+## 項目
+
+下記のリンクにそれぞれ詳細を記載しています。
+
+* [SFDXの導入について](./docs/result.md)
+  * スクラッチ組織の設定方法
+  * スクラッチ組織の使用方法について
+  * Tips (検証時のつまづいた点や困ったことなど)
+* [SFDX-Jenkins CI/CD設定](./docs/cicd-varification.md)
+  * Jenkinsの設定について
+  * CI/CDコマンドの説明について
+* [Salesforce向けテスト調査](./docs/test-varification.md)
+  * Apexテストの調査
+  * Salesforce向け静的解析の調査
+* [ローカル検証環境の起動手順](./docs/setup-local-environment.md)
+  * ローカル検証環境の起動方法
+    * クイックスタートバージョン: 設定済みのボリュームを復元する方法
+    * 手動設定バージョン: JenkinsとSonarQubeを起動し、手動でSFDXジョブの設定をする方法
+* [接続情報](./jenkins-sample/certificaitons/memo.md)
+  * アカウント
+  * キー情報
+  * ライセンス
+* [デモシナリオ](./docs/demo.md)
+  * スクラッチ組織の設定
+  * スクラッチ組織での変更とソース反映
+  * Jenkinsの実行
+
 <br>
 
 ---

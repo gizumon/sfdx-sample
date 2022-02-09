@@ -47,8 +47,6 @@
         </rightComponents>
         <useInlineFiltersInConsole>false</useInlineFiltersInConsole>
     </feedLayout>
-    <headers>PersonalTagging</headers>
-    <headers>PublicTagging</headers>
     <layoutSections>
         <customLabel>false</customLabel>
         <detailHeading>false</detailHeading>
@@ -80,14 +78,22 @@
                 <field>Reason</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Required</behavior>
-                <field>test__c</field>
+                <behavior>Edit</behavior>
+                <field>test_0615__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>test_0616__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
                 <behavior>Required</behavior>
                 <field>Status</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Required</behavior>
+                <field>test__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -193,9 +199,10 @@
         <style>OneColumn</style>
     </layoutSections>
     <layoutSections>
-        <customLabel>false</customLabel>
+        <customLabel>true</customLabel>
         <detailHeading>false</detailHeading>
         <editHeading>false</editHeading>
+        <label>カスタムリンク</label>
         <layoutColumns/>
         <layoutColumns/>
         <layoutColumns/>
@@ -276,11 +283,11 @@
     <showEmailCheckbox>true</showEmailCheckbox>
     <showHighlightsPanel>true</showHighlightsPanel>
     <showInteractionLogPanel>false</showInteractionLogPanel>
-    <showKnowledgeComponent>true</showKnowledgeComponent>
+    <showKnowledgeComponent>false</showKnowledgeComponent>
     <showRunAssignmentRulesCheckbox>true</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>true</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h1a0000012AGt</masterLabel>
+        <masterLabel>00h1m000000whqy</masterLabel>
         <sizeX>3</sizeX>
         <sizeY>4</sizeY>
         <summaryLayoutItems>

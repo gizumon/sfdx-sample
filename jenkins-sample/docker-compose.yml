@@ -1,0 +1,77 @@
+version: "3"
+services:
+  jenkins_main:
+    container_name: jenkins_main
+    image: jenkins/jenkins:latest
+    ports:
+      - 18080:8080
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    networks:
+      - sonarnet
+  sonarqube:
+    container_name: sonarqube
+    # image: sonarqube:7.9.5-community
+    image: sonarqube:8.3-community
+    depends_on:
+      - postgresql
+    environment:
+      - sonar.jdbc.url=jdbc:postgresql://postgresql:5432/sonar
+      - sonar.jdbc.username=sonar
+      - sonar.jdbc.password=sonar
+    volumes:
+      # - ./sonarqube/conf:/opt/sonarqube/conf # 7.9.X only
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+      - sonarqube_data:/opt/sonarqube/data
+    ports:
+      - "9000:9000"
+    networks:
+      - sonarnet
+  postgresql:
+    container_name: postgresql
+    image: postgres:11
+    environment:
+      - POSTGRES_USER=sonar
+      - POSTGRES_PASSWORD=sonar
+    volumes:
+      - sonarqube_postgresql:/var/lib/postgresql
+      - sonarqube_postgresql_data:/var/lib/postgresql/data
+    networks:
+      - sonarnet
+
+networks:
+  sonarnet:
+    driver: bridge
+
+volumes:
+  jenkins_home:
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: 'jenkins_home'
+  sonarqube_extensions:
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: 'sonarqube/extensions'
+  sonarqube_logs:
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: 'sonarqube/logs'
+  sonarqube_data:
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: 'sonarqube/data'
+  sonarqube_postgresql:
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: 'sonarqube/postgresql'
+  sonarqube_postgresql_data:
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: 'sonarqube/postgresql_data'
